@@ -11,11 +11,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class QuestionVoter extends Voter
 {
-    private Security $security;
-
-    public function __construct(Security $security)
+    public function __construct(private Security $security)
     {
-        $this->security = $security;
     }
 
     protected function supports(string $attribute, $subject): bool
@@ -42,12 +39,9 @@ class QuestionVoter extends Voter
             return true;
         }
 
-        // ... (check conditions and return true to grant permission) ...
-        switch ($attribute) {
-            case 'EDIT':
-                return $user === $subject->getOwner();
-        }
-
-        return false;
+        return match ($attribute) {
+            'EDIT' => $user === $subject->getOwner(),
+            default => false,
+        };
     }
 }

@@ -12,9 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AnswerController extends BaseController
 {
-    /**
-     * @Route("/answers/popular", name="app_popular_answers")
-     */
+    #[Route(path: '/answers/popular', name: 'app_popular_answers')]
     public function popularAnswers(AnswerRepository $answerRepository, Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $answers = $answerRepository->findMostPopular(
@@ -26,10 +24,8 @@ class AnswerController extends BaseController
         ]);
     }
 
-    /**
-     * @Route("/answers/{id}/vote", methods="POST", name="answer_vote")
-     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
-     */
+    #[Route(path: '/answers/{id}/vote', methods: 'POST', name: 'answer_vote')]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function answerVote(Answer $answer, LoggerInterface $logger, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
     {
         $logger->info('{user} is voting on answer {answer}!', [
@@ -37,7 +33,7 @@ class AnswerController extends BaseController
             'answer' => $answer->getId(),
         ]);
 
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $direction = $data['direction'] ?? 'up';
 
         // use real logic here to save this to the database

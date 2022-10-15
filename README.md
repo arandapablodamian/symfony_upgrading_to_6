@@ -212,7 +212,68 @@ $rectorConfig->sets([
     LevelSetList::UP_TO_PHP_81
 ]);
 
-### Anotation
+Luego ejecutamos
+```
+vendor/bin/rector process src
+```
+
+## Promoted propeties
+Esto cambia en los constructores para inyectar directamente las variables con el tipo dentro del ()
+
+Tambien modifica algunas cosas de codigo necesarias como revision de sintaxis de php -cs-fixer
+
+Example:
+This
+
+class Pizza
+{
+    private array $toppings;
+
+    public function __construct(array $toppings)
+    {
+        $this->toppings = $toppings;
+    }
+}
+
+To this
+
+class Pizza
+{
+    public function __construct(private array $toppings)
+    {
+    }
+}
+
+
+Luego para cambiar las anotaciones de entidades por los atributos de php8
+
+En rector.php reemplazamos a
+
+$rectorConfig->import(DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES);
+$rectorConfig->import(SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES);
+$rectorConfig->import(SensiolabsSetList::FRAMEWORK_EXTRA_61);
+
+
+y corremos
+
+
+```
+vendor/bin/rector process src
+```
+
+Y luego corremos para corregir cosas como espacio y demas
+
+```
+tools/php-cs-fixer/vendor/bin/php-cs-fixer fix
+```
+
+## Some annotations
+
+###Composer recipes
 The composer recipes:update command (which is added by Symfony Flex) checks which recipes are installed in your project and looks for new versions. When you choose a recipe to update, it generates a diff between the original version and the new version... then applies those changes.
 
+
 You should always check the differences closely to avoid losing any custom config... though (other than old files being entirely deleted), the patch system is pretty good at its job.
+
+## Atributes in php 8
+Attributes are a new feature of PHP 8, and the goal is to add metadata to classes, methods, variables, etc. in a structured way (and without the need of a custom parser). Before attributes, docblocks (i.e. annotations) were used to simulate their behavior.
