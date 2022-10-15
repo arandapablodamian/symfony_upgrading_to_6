@@ -201,6 +201,17 @@ First update
 - twig
 - doctrine
 
+y asi sucesivamente con todos resolviendo conflictos
+
+
+Luego para cambiar de version de php
+
+En rector php reemplazamos para que quede asi
+
+$rectorConfig->sets([
+    LevelSetList::UP_TO_PHP_81
+]);
+
 ### Anotation
 The composer recipes:update command (which is added by Symfony Flex) checks which recipes are installed in your project and looks for new versions. When you choose a recipe to update, it generates a diff between the original version and the new version... then applies those changes.
 
