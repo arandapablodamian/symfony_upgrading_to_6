@@ -189,3 +189,16 @@ composer recipes
 ```
 composer recipes:update
 ```
+
+After thar correct de conflicts from the recipe files, and after updating
+
+```
+composer require symfony/runtime
+```
+
+First update symfony framework recipe
+
+### Anotation
+The composer recipes:update command (which is added by Symfony Flex) checks which recipes are installed in your project and looks for new versions. When you choose a recipe to update, it generates a diff between the original version and the new version... then applies those changes.
+
+You should always check the differences closely to avoid losing any custom config... though (other than old files being entirely deleted), the patch system is pretty good at its job.
