@@ -177,3 +177,15 @@ There is no perfectly right or wrong way to do this... and installing a tool lik
 However, a tool like php-cs-fixer is... exactly that: a standalone, executable tool. If you install it into your main composer.json file, that tool - and its dependencies - need to be compatible with the dependencies of your application... like any other package.
 
 But because a tool like php-cs-fixer isn't meant to be used and referenced from your code (it will just be run from the command line), it doesn't need to live in your main composer.json file. For that reason, as a best practice, it's simpler to create a tools/ directory at the root of your project and install things there
+
+
+## Updating the All-Important FrameworkBundle Recipe
+
+Run
+```
+composer recipes
+```
+
+```
+composer recipes:update
+```
