@@ -196,7 +196,10 @@ After thar correct de conflicts from the recipe files, and after updating
 composer require symfony/runtime
 ```
 
-First update symfony framework recipe
+First update
+- symfony framework recipe
+- twig
+- doctrine
 
 ### Anotation
 The composer recipes:update command (which is added by Symfony Flex) checks which recipes are installed in your project and looks for new versions. When you choose a recipe to update, it generates a diff between the original version and the new version... then applies those changes.
