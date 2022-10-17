@@ -17,37 +17,37 @@ class Question
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    #[ORM\Column()]
+    private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    #[ORM\Column()]
+    private ?string $name = null;
 
     /**
      * @Gedmo\Slug(fields={"name"})
      */
-    #[ORM\Column(type: 'string', length: 100, unique: true)]
-    private $slug;
+    #[ORM\Column(length: 100, unique: true)]
+    private ?string $slug = null;
 
     #[ORM\Column(type: 'text')]
-    private $question;
+    private ?string $question = null ;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private $askedAt;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $askedAt = null;
 
     #[ORM\Column(type: 'integer')]
     private int $votes = 0;
 
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', fetch: 'EXTRA_LAZY')]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
-    private $answers;
+    private Collection $answers;
 
     #[ORM\OneToMany(targetEntity: QuestionTag::class, mappedBy: 'question')]
-    private $questionTags;
+    private Collection $questionTags;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'questions')]
+    #[ORM\ManyToOne(inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
-    private $owner;
+    private ?User $owner = null;
 
     public function __construct()
     {

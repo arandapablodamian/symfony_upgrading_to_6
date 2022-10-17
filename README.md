@@ -267,6 +267,16 @@ Y luego corremos para corregir cosas como espacio y demas
 tools/php-cs-fixer/vendor/bin/php-cs-fixer fix
 ```
 
+
+You can run 
+
+```
+composer outdated
+```
+
+to gell all outupdated packages.
+
+
 ## Some annotations
 
 ###Composer recipes
@@ -277,3 +287,16 @@ You should always check the differences closely to avoid losing any custom confi
 
 ## Atributes in php 8
 Attributes are a new feature of PHP 8, and the goal is to add metadata to classes, methods, variables, etc. in a structured way (and without the need of a custom parser). Before attributes, docblocks (i.e. annotations) were used to simulate their behavior.
+
+## Profiler
+
+in the browser url write /_profiler and there you have the last request to get all the information we need
+
+Separate the deprecations in a different monolog in prod is a good way to kwnow.
+
+## To know why it doesn't install an updated packege with composer up
+
+For example
+```
+composer why-not doctrine/dbal 3
+```

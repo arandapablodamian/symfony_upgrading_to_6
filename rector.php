@@ -14,7 +14,10 @@ use Rector\Symfony\Set\SensiolabsSetList;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->symfonyContainerXml(__DIR__ . '/var/cache/dev/App_KernelDevDebugContainer.xml');
 
-    $rectorConfig->import(DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES);
-    $rectorConfig->import(SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES);
-    $rectorConfig->import(SensiolabsSetList::FRAMEWORK_EXTRA_61);
+    // $rectorConfig->import(DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES);
+    // $rectorConfig->import(SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES);
+    // $rectorConfig->import(SensiolabsSetList::FRAMEWORK_EXTRA_61);
+    $rectorConfig->import(SymfonyLevelSetList::UP_TO_SYMFONY_60);
+    $rectorConfig->import(SymfonySetList::SYMFONY_CODE_QUALITY);
+    $rectorConfig->import(SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION);
 };
