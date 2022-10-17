@@ -6,6 +6,8 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,17 +15,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
-use Doctrine\ORM\EntityManager;
 
 class RegistrationController extends AbstractController
 {
     #[Route(path: '/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, VerifyEmailHelperInterface $verifyEmailHelper,EntityManager $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, VerifyEmailHelperInterface $verifyEmailHelper, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
@@ -43,18 +43,18 @@ class RegistrationController extends AbstractController
                 ['id' => $user->getId()]
             );
 
-            // TODO: in a real app, send this as an email!
             $signedUrl = $signatureComponents->getSignedUrl();
+            $this->sendVerificationEmail($mailer, $user, $signedUrl);
             $this->addFlash('success', sprintf(
-                'Confirm your email at: %s',
-                $signedUrl
+                'Confirm your email - the verify link was sent to %s',
+                $user->getEmail()
             ));
 
             return $this->redirectToRoute('app_homepage');
         }
 
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
+        return $this->renderForm('registration/register.html.twig', [
+            'registrationForm' => $form,
         ]);
     }
 
@@ -65,7 +65,6 @@ class RegistrationController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException();
         }
-
         try {
             $verifyEmailHelper->validateEmailConfirmation(
                 $request->getUri(),
@@ -77,10 +76,8 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('app_register');
         }
-
         $user->setIsVerified(true);
         $entityManager->flush();
-
         $this->addFlash('success', 'Account Verified! You can now log in.');
 
         return $this->redirectToRoute('app_login');
@@ -90,5 +87,21 @@ class RegistrationController extends AbstractController
     public function resendVerifyEmail(): Response
     {
         return $this->render('registration/resend_verify_email.html.twig');
+    }
+
+    private function sendVerificationEmail(MailerInterface $mailer, User $user, string $signedUrl)
+    {
+        $email = (new Email())
+            ->from('hello@example.com')
+            ->to($user->getEmail())
+            //->cc('cc@example.com')
+            //->bcc('bcc@example.com')
+            //->replyTo('fabien@example.com')
+            //->priority(Email::PRIORITY_HIGH)
+            ->subject('Verify your email on Cauldron Overflow!')
+            ->text('Please, follow the link to verify your email!')
+            ->html(sprintf('<a href="%s">%s</a>', $signedUrl, $signedUrl));
+
+        $mailer->send($email);
     }
 }

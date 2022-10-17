@@ -300,3 +300,12 @@ For example
 ```
 composer why-not doctrine/dbal 3
 ```
+
+## renderForm (symfony >=6) vs render (symfony <6)
+The biggest motivation behind introducing the renderForm() shortcut method is to return a 422 status code when validation fails instead of a 200 status code. For most users and projects, even though 422 is "more correct", you won't notice any difference. However, if you use the Turbo JavaScript library, a 422 response is needed to tell Turbo that validation failed.
+
+And, since we were already adding this shortcut method, as a bonus, we designed it to call createView() automatically for you. Sweet!
+
+## Important for docker dependencies
+
+The Symfony binary is smart enough to detect your Docker services and expose the environment variables with the appropriate port value. By the way, the env vars won't be set up correctly if you run a command in the traditional way with bin/console app:do:something. You need to execute it through the Symfony binary symfony console app:do:something.
